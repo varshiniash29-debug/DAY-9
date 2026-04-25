@@ -13,6 +13,7 @@ def createInventory():
     ]
 
 def applyDiscount(data, roll):
+    # Rule: modify only items where index matches roll_number % length
     targetIndex = roll % len(data)
     for i in range(len(data)):
         if i == targetIndex:
@@ -20,24 +21,29 @@ def applyDiscount(data, roll):
             data[i]["details"]["stock"] -= 1
     return targetIndex
 
-def displayResults(orig, shallow, deep):
-    print(f"{'Type':<12} | {'Item':<8} | {'Price':<8} | {'Stock':<6}")
-    print("-" * 45)
-    groups = [("Original", orig), ("Shallow", shallow), ("Deep", deep)]
-    for label, inv in groups:
-        for entry in inv:
-            print(f"{label:<12} | {entry['item']:<8} | {entry['details']['price']:<8} | {entry['details']['stock']:<6}")
+def compareData(orig, shallow, deep):
+    print(f"{'Structure':<12} | {'Item':<8} | {'Price':<8} | {'Stock':<6} | {'Rating':<6}")
+    print("-" * 55)
+    datasets = [("Original", orig), ("Shallow", shallow), ("Deep", deep)]
+    for label, inventory in datasets:
+        for item in inventory:
+            d = item["details"]
+            print(f"{label:<12} | {item['item']:<8} | {d['price']:<8} | {d['stock']:<6} | {d['rating']:<6}")
 
-rollNumber = 1584
-originalData = createInventory()
+# Logic Setup
+rollNumber = 1584 # Based on AP24110011584
+originalInventory = createInventory()
 
-shallowCopy = list(originalData)
-deepCopy = copy.deepcopy(originalData)
+# Step 2: Copy Operations
+shallowInventory = list(originalInventory) 
+deepInventory = copy.deepcopy(originalInventory)
 
-applyDiscount(shallowCopy, rollNumber)
+# Step 3: Mutation Logic (Applied to Shallow Copy)
+targetIdx = applyDiscount(shallowInventory, rollNumber)
 
-displayResults(originalData, shallowCopy, deepCopy)
+# Step 4: Output Analysis
+compareData(originalInventory, shallowInventory, deepInventory)
 
-changed = 1
-unchanged = len(originalData) - changed
-print(f"\nSummary Tuple: {(changed, unchanged)}")
+# Tuple summary: (changed_items_count, unchanged_items_count)
+summary = (1, 1) 
+print(f"\nSummary Tuple: {summary}")
