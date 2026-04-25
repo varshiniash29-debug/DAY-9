@@ -1,0 +1,43 @@
+import copy
+
+def createInventory():
+    return [
+        {
+            "item": "Laptop",
+            "details": {"price": 50000, "stock": 10, "rating": 4.5}
+        },
+        {
+            "item": "Phone",
+            "details": {"price": 20000, "stock": 25, "rating": 4.2}
+        }
+    ]
+
+def applyDiscount(data, roll):
+    targetIndex = roll % len(data)
+    for i in range(len(data)):
+        if i == targetIndex:
+            data[i]["details"]["price"] = int(data[i]["details"]["price"] * 0.9)
+            data[i]["details"]["stock"] -= 1
+    return targetIndex
+
+def displayResults(orig, shallow, deep):
+    print(f"{'Type':<12} | {'Item':<8} | {'Price':<8} | {'Stock':<6}")
+    print("-" * 45)
+    groups = [("Original", orig), ("Shallow", shallow), ("Deep", deep)]
+    for label, inv in groups:
+        for entry in inv:
+            print(f"{label:<12} | {entry['item']:<8} | {entry['details']['price']:<8} | {entry['details']['stock']:<6}")
+
+rollNumber = 1584
+originalData = createInventory()
+
+shallowCopy = list(originalData)
+deepCopy = copy.deepcopy(originalData)
+
+applyDiscount(shallowCopy, rollNumber)
+
+displayResults(originalData, shallowCopy, deepCopy)
+
+changed = 1
+unchanged = len(originalData) - changed
+print(f"\nSummary Tuple: {(changed, unchanged)}")
